@@ -3,11 +3,29 @@ import { Plus } from 'phosphor-react'
 import { useRouter } from 'next/router';
 import { Sidebar } from '../../components/Sidebar'
 import Head from 'next/head';
+import { useEffect, useState } from 'react';
+import { api } from '../../services/api';
 
 
 export default function Produtos() {
   const router = useRouter();
+  const [products, setProducts] = useState([]);
 
+  useEffect(() => {
+    async function getProdutos() {
+      const response = await api.get('products/',
+        {
+          headers: {
+            contentType: 'application/json',
+            Authorization: `Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjU5MzE2ODAxLCJpYXQiOjE2NTkzMTY1MDEsImp0aSI6IjU5MmUwODYzZmVlOTRmODViNWRjYjNjYzczNTU1NWFmIiwidXNlcl9pZCI6MX0.m0MtfWPGrBubuI7X-PMecvh37HCTJjV5bR4dAk_x700`,
+          },
+        })
+
+      console.log(response)
+    }
+
+    getProdutos();
+  }, [])
   function handleNewProduct() {
     router.push('/products/1');
   }
@@ -15,6 +33,9 @@ export default function Produtos() {
     base: true,
     lg: false
   })
+
+
+
   return (
     <>
       <Head>
@@ -48,6 +69,8 @@ export default function Produtos() {
               Criar novo
             </Button>
           </Flex>
+
+
         </Box>
       </Flex>
     </>
