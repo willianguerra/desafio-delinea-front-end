@@ -131,14 +131,14 @@ export default function Login() {
                 <Text color={'gray.50'} w={'full'} textAlign='center' py={4} >
                   Não tem uma conta? <Link color={'blue.500'} fontWeight={'600'} textDecoration='none'> Registre-se</Link>
                 </Text>
-                <Text w={40} borderBottom={'1px solid #2D3748'}></Text>
-                <Text color={'gray.50'} textAlign='center' pt={4} pb={1} />
-                <Flex alignItems={'center'} justifyContent='center' w={'full'}>
+                {/* <Text w={40} borderBottom={'1px solid #2D3748'}></Text> */}
+                {/* <Text color={'gray.50'} textAlign='center' pt={4} pb={1} /> */}
+                {/* <Flex alignItems={'center'} justifyContent='center' w={'full'}>
                   <Flex alignItems={'center'} minWidth={'100%'} gap={2} bg={'gray.900'} p={4} borderRadius={4} cursor={'pointer'}>
                     <Image src={'./google.png'} alt="google image" w={8} />
                     Continuar com Google
                   </Flex>
-                </Flex>
+                </Flex> */}
               </Flex>
             </Flex>
           </Flex>
