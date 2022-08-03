@@ -4,36 +4,34 @@ import { useRouter } from 'next/router';
 import { Sidebar } from '../../components/Sidebar'
 import Head from 'next/head';
 import { useEffect, useState } from 'react';
-import { api } from '../../services/api';
+import { ApiProducts } from '../../services/api';
+import { CardProducts } from '../../components/CardProducts';
+import { ProductsProps } from '../../@types/ProductsProps';
+import { GetServerSideProps } from 'next';
+import { parseCookies } from 'nookies';
 
 
 export default function Produtos() {
   const router = useRouter();
-  const [products, setProducts] = useState([]);
+  const [products, setProducts] = useState<ProductsProps[]>([]);
 
   useEffect(() => {
     async function getProdutos() {
-      const response = await api.get('products/',
-        {
-          headers: {
-            contentType: 'application/json',
-            Authorization: `Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjU5MzE2ODAxLCJpYXQiOjE2NTkzMTY1MDEsImp0aSI6IjU5MmUwODYzZmVlOTRmODViNWRjYjNjYzczNTU1NWFmIiwidXNlcl9pZCI6MX0.m0MtfWPGrBubuI7X-PMecvh37HCTJjV5bR4dAk_x700`,
-          },
-        })
+      const response = await ApiProducts.get('')
 
-      console.log(response)
+      setProducts(response.data)
+      console.log(response.data)
     }
 
     getProdutos();
   }, [])
   function handleNewProduct() {
-    router.push('/products/1');
+    router.push('/products/create');
   }
   const isDrawerSidebar = useBreakpointValue({
     base: true,
     lg: false
   })
-
 
 
   return (
@@ -70,9 +68,34 @@ export default function Produtos() {
             </Button>
           </Flex>
 
+          <Flex>
+            {products && (
+              products.map((product, i) => (
+                <CardProducts title={product.title} content={product.content} price={product.price} responsible={product.responsible} key={i} id_product={product.id_product} />
+              ))
+            )}
+          </Flex>
+
 
         </Box>
       </Flex>
     </>
   )
 }
+
+export const getServerSideProps: GetServerSideProps = async (ctx) => {
+  const { ["logado"]: validado } = parseCookies(ctx);
+
+  if (validado != "TRUE") {
+    return {
+      redirect: {
+        destination: "/login",
+        permanent: false,
+      },
+    };
+  }
+  return {
+    props: {
+    },
+  };
+};

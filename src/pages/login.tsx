@@ -1,22 +1,99 @@
 /* eslint-disable react/no-children-prop */
-import { Box, Button, Flex, IconButton, Image, Input, InputGroup, InputLeftElement, InputRightElement, Link, Stack, Text, useBreakpointValue } from "@chakra-ui/react";
+import { Box, Button, Flex, IconButton, Image, Input, InputGroup, InputLeftElement, InputRightElement, Link, Stack, Text, useBreakpointValue, useToast } from "@chakra-ui/react";
 import { Envelope, Eye, EyeSlash, Lock } from "phosphor-react";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { useRouter } from 'next/router';
 import Head from "next/head";
+import { AuthContext } from "../contexts/AuthContexts";
+
+interface EventProps {
+  key: string;
+  target: {
+    form: any;
+  };
+  preventDefault: () => void;
+}
 
 export default function Login() {
-  const [show, setShow] = useState(false)
-  const handleClick = () => setShow(!show)
+  const [show, setShow] = useState(false);
+  const handleClick = () => setShow(!show);
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
   const router = useRouter();
+  const [loading, setLoading] = useState(false);
+  const { signIn } = useContext(AuthContext);
 
+  const toast = useToast();
   const isMobile = useBreakpointValue({
     base: true,
     lg: false
   })
 
-  function handleSignIn() {
-    router.push('/');
+  async function handleSignIn() {
+    try {
+      setLoading(true);
+
+      if (!username || !password) {
+        toast({
+          title: "Erro ao realizar login!",
+          description: "Usuário ou senha não informados",
+          status: "warning",
+          duration: 1000,
+          isClosable: true,
+          position: "top",
+          onCloseComplete: () => setLoading(false),
+        });
+
+        return;
+      }
+
+      console.log(signIn);
+      const logado = await signIn({ username, password });
+
+      if (logado) {
+        toast({
+          title: "Logado com sucesso!",
+          description: "Redirecionando...",
+          status: "success",
+          duration: 1000,
+          isClosable: true,
+          position: "top",
+        });
+        router.push("/");
+      } else {
+        toast({
+          title: "Erro ao realizar login!",
+          description: "Usuário ou senha incorretos",
+          status: "error",
+          duration: 1000,
+          isClosable: true,
+          position: "top",
+        });
+
+        setLoading(false);
+      }
+    } catch (error) {
+      setLoading(false);
+      console.error("Erro Login: ", error);
+    }
+  }
+
+  const isWideVersion = useBreakpointValue({
+    base: false,
+    lg: true,
+  });
+
+  function handleEnter(event: EventProps) {
+    if (event.key.toLowerCase() === "enter") {
+      const form = event.target.form;
+      const index = [...form].indexOf(event.target);
+      if (form.elements[index + 1].id != 'show') {
+        form.elements[index + 1].focus();
+      } else {
+        form.elements[index + 2].focus();
+      }
+      event.preventDefault();
+    }
   }
 
   return (
@@ -88,9 +165,13 @@ export default function Login() {
                     color="#dcdcdc"
                     bg={'gray.900'}
                     focusBorderColor='blue.600'
-                    type='mail'
-                    placeholder='Email'
-                    borderRadius={3} />
+                    type='text'
+                    placeholder='Usuário'
+                    borderRadius={3}
+                    onChange={(event) => {
+                      setUsername(event.target.value);
+                    }}
+                  />
                 </InputGroup>
 
                 <InputGroup size='lg' >
@@ -108,6 +189,7 @@ export default function Login() {
                     pr='4.5rem'
                     type={show ? 'text' : 'password'}
                     placeholder='Senha'
+                    onChange={(event) => setPassword(event.target.value)}
                   />
 
                   <InputRightElement onClick={handleClick} children={show ? <EyeSlash color="#dcdcdc" /> : <Eye color="#dcdcdc" />} />
@@ -122,6 +204,7 @@ export default function Login() {
                 size='lg'
                 borderRadius={2}
                 onClick={handleSignIn}
+                isLoading={loading}
               >
                 Entrar
               </Button>

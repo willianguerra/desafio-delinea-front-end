@@ -1,6 +1,7 @@
 import { Box, Button, Flex, Heading, useBreakpointValue } from '@chakra-ui/react'
-import type { NextPage } from 'next'
+import type { GetServerSideProps, NextPage } from 'next'
 import Head from 'next/head'
+import { parseCookies } from 'nookies'
 import { Sidebar } from '../components/Sidebar'
 
 const Home: NextPage = () => {
@@ -38,3 +39,21 @@ const Home: NextPage = () => {
 }
 
 export default Home
+
+
+export const getServerSideProps: GetServerSideProps = async (ctx) => {
+  const { ["logado"]: validado } = parseCookies(ctx);
+
+  if (validado != "TRUE") {
+    return {
+      redirect: {
+        destination: "/login",
+        permanent: false,
+      },
+    };
+  }
+  return {
+    props: {
+    },
+  };
+};
