@@ -1,5 +1,5 @@
-import { Flex, Box, Text, useBreakpointValue, Heading, Link, Button, Icon } from '@chakra-ui/react'
-import { Plus } from 'phosphor-react'
+import { Flex, Box, useBreakpointValue, Heading, Button, Icon } from '@chakra-ui/react'
+import { MagnifyingGlass, Plus } from 'phosphor-react'
 import { useRouter } from 'next/router';
 import { Sidebar } from '../../components/Sidebar'
 import Head from 'next/head';
@@ -10,7 +10,6 @@ import { ProductsProps } from '../../@types/ProductsProps';
 import { GetServerSideProps } from 'next';
 import { parseCookies } from 'nookies';
 
-
 export default function Produtos() {
   const router = useRouter();
   const [products, setProducts] = useState<ProductsProps[]>([]);
@@ -18,9 +17,7 @@ export default function Produtos() {
   useEffect(() => {
     async function getProdutos() {
       const response = await ApiProducts.get('')
-
       setProducts(response.data)
-      console.log(response.data)
     }
 
     getProdutos();
@@ -33,13 +30,13 @@ export default function Produtos() {
     lg: false
   })
 
-
   return (
     <>
       <Head>
         <title>Products | Delinea</title>
       </Head>
-      <Flex w='100%'
+      <Flex
+        w='100%'
         bg={'gray.800'}
         minHeight={'100vh'}
         h={'full'}
@@ -54,29 +51,60 @@ export default function Produtos() {
             <Heading size='lg' fontWeight='normal'>
               Produtos
             </Heading>
-
-            <Button
-              as='a'
-              size='sm'
-              fontSize='sm'
-              colorScheme='blue'
-              cursor={'pointer'}
-              leftIcon={<Icon as={Plus} fontSize='20' />}
-              onClick={handleNewProduct}
-            >
-              Criar novo
-            </Button>
+            <Flex gap={'2'}>
+              <Button
+                as='a'
+                size='md'
+                fontSize='md'
+                colorScheme='blue'
+                cursor={'pointer'}
+                leftIcon={<Icon as={MagnifyingGlass} fontSize='20' />}
+                onClick={handleNewProduct}
+              >
+                Filtrar
+              </Button>
+              <Button
+                as='a'
+                size='md'
+                fontSize='md'
+                colorScheme='blue'
+                cursor={'pointer'}
+                leftIcon={<Icon as={Plus} fontSize='20' />}
+                onClick={handleNewProduct}
+              >
+                Criar novo
+              </Button>
+            </Flex>
           </Flex>
 
-          <Flex>
+          <Flex
+            flex="1"
+            gap="2"
+            flexDirection={'column'}
+          >
             {products && (
-              products.map((product, i) => (
-                <CardProducts title={product.title} content={product.content} price={product.price} responsible={product.responsible} key={i} id_product={product.id_product} />
-              ))
+              products.map((product, i) => {
+                return (
+                  <Box
+                    key={i}
+                    bg={'gray.900'}
+                    borderRadius={"6"}
+                    w={'100%'}
+                    minH={'200px'}
+                  >
+                    <CardProducts
+                      title={product.title}
+                      content={product.content}
+                      price={product.price}
+                      responsible={product.responsible}
+                      id_product={product.id_product}
+                      image={product.image}
+                    />
+                  </Box>
+                )
+              })
             )}
           </Flex>
-
-
         </Box>
       </Flex>
     </>

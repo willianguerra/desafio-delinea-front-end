@@ -1,8 +1,9 @@
-import { Box, Button, Flex, Heading, Input, Textarea, useBreakpointValue } from "@chakra-ui/react";
+import { Box, Button, Flex, Heading, Input, Textarea, useBreakpointValue, useToast } from "@chakra-ui/react";
 import { GetServerSideProps } from "next";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { parseCookies } from "nookies";
+import { Trash } from "phosphor-react";
 import { useEffect, useState } from "react";
 import LoadingOverlayWrapper from "react-loading-overlay-ts";
 import { ClipLoader } from "react-spinners";
@@ -11,15 +12,17 @@ import { Sidebar } from "../../components/Sidebar";
 import { ApiProducts } from "../../services/api";
 
 export default function Products() {
-
+  const toast = useToast();
   const router = useRouter();
   const { slug } = router.query;
+  const [loading, setLoading] = useState(false);
   const [products, setProducts] = useState<ProductsProps>({
     id_product: '',
     responsible: '',
     title: '',
     content: '',
     price: '',
+    image: '',
   });
 
   useEffect(() => {
@@ -43,14 +46,122 @@ export default function Products() {
     lg: false
   });
 
+  async function handleDeleteProduct() {
+    try {
+      setLoading(true)
+      const response = await ApiProducts.delete(`/${products.id_product}/`);
+
+      if (response.status != 204) {
+        toast({
+          title: "Erro ao editar novo Produto!",
+          status: "warning",
+          duration: 1000,
+          isClosable: true,
+          position: "top",
+          onCloseComplete: () => setLoading(false),
+        });
+        return;
+      }
+
+      toast({
+        title: "Produto deletado com sucesso!",
+        description: "Rendirecionando...",
+        status: "warning",
+        duration: 1000,
+        isClosable: true,
+        position: "top",
+        onCloseComplete: () => router.push('/products'),
+      });
+
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false)
+    }
+  }
 
   async function handleChangeProduct() {
-    // const response = await ApiProducts.put('', )
-    console.log(`vai alterar`)
+    try {
+      setLoading(true)
+      const response = await ApiProducts.put(`/${products.id_product}/`, {
+        body: {
+          "id_product": products.id_product,
+          "responsible": products.responsible,
+          "title": products.title,
+          "content": products.content,
+          "price": products.price,
+          "image": products.image
+        }
+      });
+
+      if (response.status != 200) {
+        toast({
+          title: "Erro ao editar novo Produto!",
+          status: "warning",
+          duration: 1000,
+          isClosable: true,
+          position: "top",
+          onCloseComplete: () => setLoading(false),
+        });
+        return;
+      }
+
+      toast({
+        title: "Produto editado com sucesso!",
+        description: "Rendirecionando...",
+        status: "warning",
+        duration: 1000,
+        isClosable: true,
+        position: "top",
+        onCloseComplete: () => router.push('/products'),
+      });
+
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false)
+    }
   }
   async function handleNewProduct() {
-    // const response = await ApiProducts.post('', )
-    console.log(`vai cadastrar`)
+    try {
+      setLoading(true)
+      const response = await ApiProducts.post('', {
+        body: {
+          "responsible": products.responsible,
+          "title": products.title,
+          "content": products.content,
+          "price": products.price,
+          "image": products.image
+        }
+      });
+
+      if (response.status != 200) {
+        toast({
+          title: "Erro ao Cadastrar novo Produto!",
+          status: "warning",
+          duration: 1000,
+          isClosable: true,
+          position: "top",
+          onCloseComplete: () => setLoading(false),
+        });
+        return;
+      }
+
+      toast({
+        title: "Produto cadastrado com sucesso!",
+        description: "Rendirecionando...",
+        status: "warning",
+        duration: 1000,
+        isClosable: true,
+        position: "top",
+        onCloseComplete: () => router.push('/products'),
+      });
+
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false)
+    }
   }
 
   return (
@@ -77,6 +188,22 @@ export default function Products() {
                 {slug != 'create' ? `Produto ${products.title}` : 'Novo Produto'}
               </Heading>
 
+
+              {slug != 'create' && (
+                <Button
+                  title={'Deletar Produto'}
+                  type='submit'
+                  mt='6'
+                  colorScheme='red'
+                  size='lg'
+                  borderRadius={2}
+                  onClick={handleDeleteProduct}
+                  isLoading={loading}
+                >
+                  <Trash />
+                </Button>
+              )}
+
             </Flex>
             <Flex justifyContent={isDrawerSidebar ? 'space-between' : 'center'} flexDirection={isDrawerSidebar ? 'column' : 'row'} gap='2' mb='2' >
 
@@ -90,8 +217,12 @@ export default function Products() {
                 type={'text'}
                 placeholder='Titúlo'
                 value={products.title}
+                onChange={(event) => {
+                  setProducts({ ...products, title: event.target.value });
+                }}
               />
               <Input
+                disabled={slug != 'create'}
                 border="none"
                 color="#dcdcdc"
                 bg={'gray.900'}
@@ -101,7 +232,12 @@ export default function Products() {
                 type={'text'}
                 placeholder='Responsável'
                 value={products.responsible}
+                onChange={(event) => {
+                  setProducts({ ...products, responsible: event.target.value });
+                }}
               />
+            </Flex>
+            <Flex justifyContent={isDrawerSidebar ? 'space-between' : 'center'} flexDirection={isDrawerSidebar ? 'column' : 'row'} gap='2' mb='2' >
               <Input
                 border="none"
                 color="#dcdcdc"
@@ -112,9 +248,26 @@ export default function Products() {
                 type={'text'}
                 placeholder='Preco'
                 value={products.price}
+                onChange={(event) => {
+                  setProducts({ ...products, price: event.target.value });
+                }}
+              />
+
+              <Input
+                disabled={slug != 'create'}
+                border="none"
+                color="#dcdcdc"
+                bg={'gray.900'}
+                focusBorderColor='blue.600'
+                borderRadius={3}
+                pr='4.5rem'
+                type="file"
+                placeholder='Imagem'
+                onChange={(event) => {
+                  setProducts({ ...products, image: event.target.value });
+                }}
               />
             </Flex>
-
             <Textarea
               border="none"
               color="#dcdcdc"
@@ -124,16 +277,19 @@ export default function Products() {
               pr='4.5rem'
               placeholder='Conteúdo'
               value={products.content}
+              onChange={(event) => {
+                setProducts({ ...products, content: event.target.value });
+              }}
             />
-            <Flex w={'full'} justifyContent={'flex-end'}>
+            <Flex w={'full'} justifyContent={'flex-end'} gap={'2'}>
               <Button
+                title={'Cadastrar/Alterar Produto'}
                 type='submit'
                 mt='6'
                 colorScheme='blue'
                 size='lg'
                 borderRadius={2}
                 onClick={slug == 'create' ? handleNewProduct : handleChangeProduct}
-                isLoading={false}
               >
                 {slug == 'create' ? ('Cadastrar') : ('Alterar')}
               </Button>

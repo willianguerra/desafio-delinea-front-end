@@ -46,8 +46,6 @@ export default function Login() {
 
         return;
       }
-
-      console.log(signIn);
       const logado = await signIn({ username, password });
 
       if (logado) {

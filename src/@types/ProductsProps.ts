@@ -4,4 +4,5 @@ export interface ProductsProps {
   title: string;
   content: string;
   price: string;
+  image: string;
 }
