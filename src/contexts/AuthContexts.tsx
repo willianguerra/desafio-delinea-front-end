@@ -1,4 +1,4 @@
-import { createContext, useState } from "react";
+import { createContext, ReactNode, useState } from "react";
 
 import axios from "axios";
 import { setCookie } from "nookies";
@@ -12,9 +12,13 @@ interface AuthContextType {
   user: string | null;
 }
 
+interface AuthProviderType {
+  children: ReactNode;
+}
+
 export const AuthContext = createContext({} as AuthContextType);
 
-export function AuthProvider({ children }) {
+export function AuthProvider({ children }: AuthProviderType) {
   const [user, setUser] = useState<string | null>(null);
 
   const isAuthenticated = !!user;
