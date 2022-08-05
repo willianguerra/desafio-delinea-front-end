@@ -92,7 +92,7 @@ export default function Products(props: { logado: Boolean }) {
         // "image": ''
       });
 
-      if (response.status != 200) {
+      if (response.status != 201) {
         toast({
           title: "Erro ao editar novo Produto!",
           status: "warning",
