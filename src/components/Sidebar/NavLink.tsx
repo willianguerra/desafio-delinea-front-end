@@ -1,5 +1,5 @@
 import { ElementType } from "react";
-import { Text, Link as ChakraLink, Icon, LinkProps, Flex } from "@chakra-ui/react";
+import { Text, Link as ChakraLink, Icon, LinkProps } from "@chakra-ui/react";
 import { useRouter } from "next/router";
 
 interface NavLinkProps extends LinkProps {

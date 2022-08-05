@@ -91,7 +91,7 @@ export default function Products(props: { logado: Boolean }) {
       toast({
         title: "Produto deletado com sucesso!",
         description: "Rendirecionando...",
-        status: "warning",
+        status: "success",
         duration: 1000,
         isClosable: true,
         position: "top",
@@ -115,7 +115,7 @@ export default function Products(props: { logado: Boolean }) {
           "title": products.title,
           "content": products.content,
           "price": products.price,
-          // "image": baseImage
+          "image": ''
         }
       });
 
@@ -134,7 +134,7 @@ export default function Products(props: { logado: Boolean }) {
       toast({
         title: "Produto editado com sucesso!",
         description: "Rendirecionando...",
-        status: "warning",
+        status: "success",
         duration: 1000,
         isClosable: true,
         position: "top",
@@ -200,11 +200,11 @@ export default function Products(props: { logado: Boolean }) {
           "title": products.title,
           "content": products.content,
           "price": products.price,
-          "image": baseImage
+          "image": ''
         }
       });
 
-      if (response.status != 200) {
+      if (response.status != 201) {
         toast({
           title: "Erro ao Cadastrar/Alterar produto!",
           status: "error",
@@ -219,7 +219,7 @@ export default function Products(props: { logado: Boolean }) {
       toast({
         title: "Produto cadastrado com sucesso!",
         description: "Rendirecionando...",
-        status: "warning",
+        status: "success",
         duration: 1000,
         isClosable: true,
         position: "top",

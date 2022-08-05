@@ -1,19 +1,11 @@
 /* eslint-disable react/no-children-prop */
-import { Box, Button, Flex, IconButton, Image, Input, InputGroup, InputLeftElement, InputRightElement, Link, Stack, Text, useBreakpointValue, useToast } from "@chakra-ui/react";
-import { ArrowCircleLeft, ArrowLeft, Envelope, Eye, EyeSlash, Lock, User } from "phosphor-react";
+import { Box, Button, Flex, Image, Input, InputGroup, InputLeftElement, InputRightElement, Link, Stack, Text, useBreakpointValue, useToast } from "@chakra-ui/react";
+import { ArrowLeft, Envelope, Eye, EyeSlash, Lock, User } from "phosphor-react";
 import { useContext, useState } from "react";
 import { useRouter } from 'next/router';
 import Head from "next/head";
 import { AuthContext } from "../contexts/AuthContexts";
-import { api, ApiProducts } from "../services/api";
-
-// interface EventProps {
-//   key: string;
-//   target: {
-//     form: any;
-//   };
-//   preventDefault: () => void;
-// }
+import { api } from "../services/api";
 
 export default function Login() {
   const [show, setShow] = useState(false);
@@ -84,39 +76,6 @@ export default function Login() {
   }
 
   async function handleSignUp() {
-    if (username == '') {
-      toast({
-        title: "Usuário não informado!",
-        status: "warning",
-        duration: 1000,
-        isClosable: true,
-        position: "top",
-        onCloseComplete: () => setLoading(false),
-      });
-      return
-    }
-    if (email == '') {
-      toast({
-        title: "Email não informado!",
-        status: "warning",
-        duration: 1000,
-        isClosable: true,
-        position: "top",
-        onCloseComplete: () => setLoading(false),
-      });
-      return
-    }
-    if (password == '') {
-      toast({
-        title: "Senha não informada!",
-        status: "warning",
-        duration: 1000,
-        isClosable: true,
-        position: "top",
-        onCloseComplete: () => setLoading(false),
-      });
-      return
-    }
     const response = await api.post('/api/user', {
       "username": username,
       "password": password,
@@ -141,22 +100,12 @@ export default function Login() {
       duration: 1000,
       isClosable: true,
       position: "top",
-      onCloseComplete: () => setRegister(false),
+      onCloseComplete: () => {
+        setRegister(false)
+        setLoading(false)
+      }
     });
   }
-
-  // function handleEnter(event: EventProps) {
-  //   if (event.key.toLowerCase() === "enter") {
-  //     const form = event.target.form;
-  //     const index = [...form].indexOf(event.target);
-  //     if (form.elements[index + 1].id != 'show') {
-  //       form.elements[index + 1].focus();
-  //     } else {
-  //       form.elements[index + 2].focus();
-  //     }
-  //     event.preventDefault();
-  //   }
-  // }
 
   return (
 
@@ -288,7 +237,6 @@ export default function Login() {
                   />
 
                   <InputRightElement onClick={handleClick} children={show ? <EyeSlash color="#dcdcdc" /> : <Eye color="#dcdcdc" />} />
-                  {/* <IconButton variant="unstyled"  aria-label="Open Navigation" icon /> */}
                 </InputGroup>
               </Stack>
 
@@ -309,14 +257,6 @@ export default function Login() {
                 <Text color={'gray.50'} w={'full'} textAlign='center' py={4} >
                   Não tem uma conta? <Link color={'blue.500'} fontWeight={'600'} textDecoration='none' onClick={handleOpenOrCloseSignup}> Registre-se</Link>
                 </Text>
-                {/* <Text w={40} borderBottom={'1px solid #2D3748'}></Text> */}
-                {/* <Text color={'gray.50'} textAlign='center' pt={4} pb={1} /> */}
-                {/* <Flex alignItems={'center'} justifyContent='center' w={'full'}>
-                  <Flex alignItems={'center'} minWidth={'100%'} gap={2} bg={'gray.900'} p={4} borderRadius={4} cursor={'pointer'}>
-                    <Image src={'./google.png'} alt="google image" w={8} />
-                    Continuar com Google
-                    </Flex>
-                  </Flex> */}
               </Flex>
             </Flex>
           </Flex>
