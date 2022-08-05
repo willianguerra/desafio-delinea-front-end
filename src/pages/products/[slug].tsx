@@ -11,7 +11,7 @@ import { ProductsProps } from "../../@types/ProductsProps";
 import { Sidebar } from "../../components/Sidebar";
 import { ApiProducts } from "../../services/api";
 
-export default function Products() {
+export default function Products(props: { logado: Boolean }) {
   const toast = useToast();
   const router = useRouter();
   const { slug } = router.query;
@@ -26,7 +26,7 @@ export default function Products() {
   });
 
   useEffect(() => {
-    async function getProdutos() {
+    async function getProducts() {
       const response = await ApiProducts.get('')
 
       if (response.status === 200) {
@@ -37,7 +37,7 @@ export default function Products() {
     if (slug == 'create') {
       return;
     } else {
-      getProdutos();
+      getProducts();
     }
   }, [slug])
 
@@ -70,7 +70,7 @@ export default function Products() {
         duration: 1000,
         isClosable: true,
         position: "top",
-        onCloseComplete: () => router.push('/products'),
+        onCloseComplete: () => router.push('/'),
       });
 
     } catch (err) {
@@ -90,7 +90,7 @@ export default function Products() {
           "title": products.title,
           "content": products.content,
           "price": products.price,
-          "image": products.image
+          "image": ''
         }
       });
 
@@ -113,7 +113,7 @@ export default function Products() {
         duration: 1000,
         isClosable: true,
         position: "top",
-        onCloseComplete: () => router.push('/products'),
+        onCloseComplete: () => router.push('/'),
       });
 
     } catch (err) {
@@ -131,13 +131,13 @@ export default function Products() {
           "title": products.title,
           "content": products.content,
           "price": products.price,
-          "image": products.image
+          "image": ''
         }
       });
 
       if (response.status != 200) {
         toast({
-          title: "Erro ao Cadastrar novo Produto!",
+          title: "Erro ao Cadastrar/Alterar produto!",
           status: "warning",
           duration: 1000,
           isClosable: true,
@@ -154,7 +154,7 @@ export default function Products() {
         duration: 1000,
         isClosable: true,
         position: "top",
-        onCloseComplete: () => router.push('/products'),
+        onCloseComplete: () => router.push('/'),
       });
 
     } catch (err) {
@@ -189,7 +189,7 @@ export default function Products() {
               </Heading>
 
 
-              {slug != 'create' && (
+              {props.logado && slug != 'create' && (
                 <Button
                   title={'Deletar Produto'}
                   type='submit'
@@ -282,17 +282,19 @@ export default function Products() {
               }}
             />
             <Flex w={'full'} justifyContent={'flex-end'} gap={'2'}>
-              <Button
-                title={'Cadastrar/Alterar Produto'}
-                type='submit'
-                mt='6'
-                colorScheme='blue'
-                size='lg'
-                borderRadius={2}
-                onClick={slug == 'create' ? handleNewProduct : handleChangeProduct}
-              >
-                {slug == 'create' ? ('Cadastrar') : ('Alterar')}
-              </Button>
+              {props.logado && (
+                <Button
+                  title={'Cadastrar/Alterar Produto'}
+                  type='submit'
+                  mt='6'
+                  colorScheme='blue'
+                  size='lg'
+                  borderRadius={2}
+                  onClick={slug == 'create' ? handleNewProduct : handleChangeProduct}
+                >
+                  Confirmar
+                </Button>
+              )}
             </Flex>
           </Box>
         </Flex >
@@ -323,6 +325,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   }
   return {
     props: {
+      logado: validado == 'TRUE',
     },
   };
 };

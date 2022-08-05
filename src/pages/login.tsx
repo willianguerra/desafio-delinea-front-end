@@ -1,24 +1,27 @@
 /* eslint-disable react/no-children-prop */
 import { Box, Button, Flex, IconButton, Image, Input, InputGroup, InputLeftElement, InputRightElement, Link, Stack, Text, useBreakpointValue, useToast } from "@chakra-ui/react";
-import { Envelope, Eye, EyeSlash, Lock } from "phosphor-react";
+import { ArrowCircleLeft, ArrowLeft, Envelope, Eye, EyeSlash, Lock, User } from "phosphor-react";
 import { useContext, useState } from "react";
 import { useRouter } from 'next/router';
 import Head from "next/head";
 import { AuthContext } from "../contexts/AuthContexts";
+import { api, ApiProducts } from "../services/api";
 
-interface EventProps {
-  key: string;
-  target: {
-    form: any;
-  };
-  preventDefault: () => void;
-}
+// interface EventProps {
+//   key: string;
+//   target: {
+//     form: any;
+//   };
+//   preventDefault: () => void;
+// }
 
 export default function Login() {
   const [show, setShow] = useState(false);
   const handleClick = () => setShow(!show);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [email, setEmail] = useState("");
+  const [register, setRegister] = useState(false);
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const { signIn } = useContext(AuthContext);
@@ -76,23 +79,51 @@ export default function Login() {
     }
   }
 
-  const isWideVersion = useBreakpointValue({
-    base: false,
-    lg: true,
-  });
-
-  function handleEnter(event: EventProps) {
-    if (event.key.toLowerCase() === "enter") {
-      const form = event.target.form;
-      const index = [...form].indexOf(event.target);
-      if (form.elements[index + 1].id != 'show') {
-        form.elements[index + 1].focus();
-      } else {
-        form.elements[index + 2].focus();
-      }
-      event.preventDefault();
-    }
+  function handleOpenOrCloseSignup() {
+    setRegister(!register);
   }
+
+  async function handleSignUp() {
+    const response = await api.post('/api/user', {
+      "username": username,
+      "password": password,
+      "email": email
+    });
+
+    if (response.status != 201) {
+      toast({
+        title: "Erro ao cadastrar usuário!",
+        status: "error",
+        duration: 1000,
+        isClosable: true,
+        position: "top",
+        onCloseComplete: () => setLoading(false),
+      });
+      return;
+    }
+
+    toast({
+      title: "Usuário cadastrado com sucesso!",
+      status: "success",
+      duration: 1000,
+      isClosable: true,
+      position: "top",
+      onCloseComplete: () => setRegister(false),
+    });
+  }
+
+  // function handleEnter(event: EventProps) {
+  //   if (event.key.toLowerCase() === "enter") {
+  //     const form = event.target.form;
+  //     const index = [...form].indexOf(event.target);
+  //     if (form.elements[index + 1].id != 'show') {
+  //       form.elements[index + 1].focus();
+  //     } else {
+  //       form.elements[index + 2].focus();
+  //     }
+  //     event.preventDefault();
+  //   }
+  // }
 
   return (
 
@@ -152,11 +183,23 @@ export default function Login() {
               borderRadius={8}
               flexDir='column'
             >
+              {register && (
+                <Text
+                  color={'white'}
+                  cursor='pointer'
+                  mt={isMobile ? -8 : -10}
+                  fontSize={'2xl'}
+                  position={'absolute'}
+                  onClick={handleOpenOrCloseSignup}
+                >
+                  <ArrowLeft />
+                </Text>
+              )}
               <Stack spacing='4'>
                 <InputGroup size='lg'>
                   <InputLeftElement
                     pointerEvents='none'
-                    children={<Envelope color="#dcdcdc" />}
+                    children={<User color="#dcdcdc" />}
                   />
                   <Input
                     border="none"
@@ -171,6 +214,27 @@ export default function Login() {
                     }}
                   />
                 </InputGroup>
+
+                {register && (
+                  <InputGroup size='lg'>
+                    <InputLeftElement
+                      pointerEvents='none'
+                      children={<Envelope color="#dcdcdc" />}
+                    />
+                    <Input
+                      border="none"
+                      color="#dcdcdc"
+                      bg={'gray.900'}
+                      focusBorderColor='blue.600'
+                      type='email'
+                      placeholder='Email'
+                      borderRadius={3}
+                      onChange={(event) => {
+                        setEmail(event.target.value);
+                      }}
+                    />
+                  </InputGroup>
+                )}
 
                 <InputGroup size='lg' >
                   <InputLeftElement
@@ -196,21 +260,21 @@ export default function Login() {
               </Stack>
 
               <Button
-                type='submit'
+                type='button'
                 mt='6'
                 colorScheme='blue'
                 size='lg'
                 borderRadius={2}
-                onClick={handleSignIn}
+                onClick={register ? handleSignUp : handleSignIn}
                 isLoading={loading}
               >
-                Entrar
+                {register ? 'Cadastrar' : 'Entrar'}
               </Button>
 
               <Flex color={'gray.50'} w={'full'} alignItems={'center'} flexDirection={'column'}>
 
                 <Text color={'gray.50'} w={'full'} textAlign='center' py={4} >
-                  Não tem uma conta? <Link color={'blue.500'} fontWeight={'600'} textDecoration='none'> Registre-se</Link>
+                  Não tem uma conta? <Link color={'blue.500'} fontWeight={'600'} textDecoration='none' onClick={handleOpenOrCloseSignup}> Registre-se</Link>
                 </Text>
                 {/* <Text w={40} borderBottom={'1px solid #2D3748'}></Text> */}
                 {/* <Text color={'gray.50'} textAlign='center' pt={4} pb={1} /> */}
@@ -218,8 +282,8 @@ export default function Login() {
                   <Flex alignItems={'center'} minWidth={'100%'} gap={2} bg={'gray.900'} p={4} borderRadius={4} cursor={'pointer'}>
                     <Image src={'./google.png'} alt="google image" w={8} />
                     Continuar com Google
-                  </Flex>
-                </Flex> */}
+                    </Flex>
+                  </Flex> */}
               </Flex>
             </Flex>
           </Flex>

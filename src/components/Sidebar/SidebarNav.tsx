@@ -8,7 +8,7 @@ export function SidebarNav() {
   return (
     <Stack spacing='14' align='flex-start' >
       <NavSection title='Geral'>
-        <NavLink icon={Barcode} href='/products'  _hover={{ color: 'blue.500', transition: '0.5s ease', textDecoration: 'none' }}>Produtos</NavLink>
+        <NavLink icon={Barcode} href='/'  _hover={{ color: 'blue.500', transition: '0.5s ease', textDecoration: 'none' }}>Produtos</NavLink>
       </NavSection>
     </Stack>
   )
