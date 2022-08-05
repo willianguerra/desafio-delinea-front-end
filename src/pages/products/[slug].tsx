@@ -66,7 +66,7 @@ export default function Products(props: { logado: Boolean }) {
       toast({
         title: "Produto deletado com sucesso!",
         description: "Rendirecionando...",
-        status: "warning",
+        status: "success",
         duration: 1000,
         isClosable: true,
         position: "top",
@@ -84,14 +84,12 @@ export default function Products(props: { logado: Boolean }) {
     try {
       setLoading(true)
       const response = await ApiProducts.put(`/${products.id_product}/`, {
-        body: {
-          "id_product": products.id_product,
-          "responsible": products.responsible,
-          "title": products.title,
-          "content": products.content,
-          "price": products.price,
-          "image": ''
-        }
+        "id_product": products.id_product,
+        "responsible": products.responsible,
+        "title": products.title,
+        "content": products.content,
+        "price": products.price,
+        // "image": ''
       });
 
       if (response.status != 200) {
@@ -109,7 +107,7 @@ export default function Products(props: { logado: Boolean }) {
       toast({
         title: "Produto editado com sucesso!",
         description: "Rendirecionando...",
-        status: "warning",
+        status: "success",
         duration: 1000,
         isClosable: true,
         position: "top",
@@ -126,13 +124,11 @@ export default function Products(props: { logado: Boolean }) {
     try {
       setLoading(true)
       const response = await ApiProducts.post('', {
-        body: {
-          "responsible": products.responsible,
-          "title": products.title,
-          "content": products.content,
-          "price": products.price,
-          "image": ''
-        }
+        "responsible": products.responsible,
+        "title": products.title,
+        "content": products.content,
+        "price": products.price,
+        // "image": ''
       });
 
       if (response.status != 200) {
@@ -150,7 +146,7 @@ export default function Products(props: { logado: Boolean }) {
       toast({
         title: "Produto cadastrado com sucesso!",
         description: "Rendirecionando...",
-        status: "warning",
+        status: "success",
         duration: 1000,
         isClosable: true,
         position: "top",

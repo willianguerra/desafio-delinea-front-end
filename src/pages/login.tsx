@@ -7,14 +7,6 @@ import Head from "next/head";
 import { AuthContext } from "../contexts/AuthContexts";
 import { api, ApiProducts } from "../services/api";
 
-// interface EventProps {
-//   key: string;
-//   target: {
-//     form: any;
-//   };
-//   preventDefault: () => void;
-// }
-
 export default function Login() {
   const [show, setShow] = useState(false);
   const handleClick = () => setShow(!show);
@@ -84,6 +76,7 @@ export default function Login() {
   }
 
   async function handleSignUp() {
+    setLoading(true)
     const response = await api.post('/api/user', {
       "username": username,
       "password": password,
@@ -108,22 +101,12 @@ export default function Login() {
       duration: 1000,
       isClosable: true,
       position: "top",
-      onCloseComplete: () => setRegister(false),
+      onCloseComplete: () => {
+        setRegister(false)
+        setLoading(false)
+      }
     });
   }
-
-  // function handleEnter(event: EventProps) {
-  //   if (event.key.toLowerCase() === "enter") {
-  //     const form = event.target.form;
-  //     const index = [...form].indexOf(event.target);
-  //     if (form.elements[index + 1].id != 'show') {
-  //       form.elements[index + 1].focus();
-  //     } else {
-  //       form.elements[index + 2].focus();
-  //     }
-  //     event.preventDefault();
-  //   }
-  // }
 
   return (
 
