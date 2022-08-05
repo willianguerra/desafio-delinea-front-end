@@ -1,11 +1,11 @@
 /* eslint-disable react/no-children-prop */
-import { Box, Button, Flex, IconButton, Image, Input, InputGroup, InputLeftElement, InputRightElement, Link, Stack, Text, useBreakpointValue, useToast } from "@chakra-ui/react";
-import { ArrowCircleLeft, ArrowLeft, Envelope, Eye, EyeSlash, Lock, User } from "phosphor-react";
+import { Box, Button, Flex, Image, Input, InputGroup, InputLeftElement, InputRightElement, Link, Stack, Text, useBreakpointValue, useToast } from "@chakra-ui/react";
+import { ArrowLeft, Envelope, Eye, EyeSlash, Lock, User } from "phosphor-react";
 import { useContext, useState } from "react";
 import { useRouter } from 'next/router';
 import Head from "next/head";
 import { AuthContext } from "../contexts/AuthContexts";
-import { api, ApiProducts } from "../services/api";
+import { api } from "../services/api";
 
 export default function Login() {
   const [show, setShow] = useState(false);
@@ -238,7 +238,6 @@ export default function Login() {
                   />
 
                   <InputRightElement onClick={handleClick} children={show ? <EyeSlash color="#dcdcdc" /> : <Eye color="#dcdcdc" />} />
-                  {/* <IconButton variant="unstyled"  aria-label="Open Navigation" icon /> */}
                 </InputGroup>
               </Stack>
 
@@ -259,14 +258,6 @@ export default function Login() {
                 <Text color={'gray.50'} w={'full'} textAlign='center' py={4} >
                   Não tem uma conta? <Link color={'blue.500'} fontWeight={'600'} textDecoration='none' onClick={handleOpenOrCloseSignup}> Registre-se</Link>
                 </Text>
-                {/* <Text w={40} borderBottom={'1px solid #2D3748'}></Text> */}
-                {/* <Text color={'gray.50'} textAlign='center' pt={4} pb={1} /> */}
-                {/* <Flex alignItems={'center'} justifyContent='center' w={'full'}>
-                  <Flex alignItems={'center'} minWidth={'100%'} gap={2} bg={'gray.900'} p={4} borderRadius={4} cursor={'pointer'}>
-                    <Image src={'./google.png'} alt="google image" w={8} />
-                    Continuar com Google
-                    </Flex>
-                  </Flex> */}
               </Flex>
             </Flex>
           </Flex>
