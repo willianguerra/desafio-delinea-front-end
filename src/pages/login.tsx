@@ -84,6 +84,39 @@ export default function Login() {
   }
 
   async function handleSignUp() {
+    if (username == '') {
+      toast({
+        title: "Usuário não informado!",
+        status: "warning",
+        duration: 1000,
+        isClosable: true,
+        position: "top",
+        onCloseComplete: () => setLoading(false),
+      });
+      return
+    }
+    if (email == '') {
+      toast({
+        title: "Email não informado!",
+        status: "warning",
+        duration: 1000,
+        isClosable: true,
+        position: "top",
+        onCloseComplete: () => setLoading(false),
+      });
+      return
+    }
+    if (password == '') {
+      toast({
+        title: "Senha não informada!",
+        status: "warning",
+        duration: 1000,
+        isClosable: true,
+        position: "top",
+        onCloseComplete: () => setLoading(false),
+      });
+      return
+    }
     const response = await api.post('/api/user', {
       "username": username,
       "password": password,
