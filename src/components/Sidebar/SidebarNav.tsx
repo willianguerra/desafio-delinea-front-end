@@ -2,7 +2,7 @@ import { Stack } from "@chakra-ui/react";
 
 import { NavSection } from "./NavSection";
 import { NavLink } from "./NavLink";
-import { Barcode, ChartBar } from "phosphor-react";
+import { Barcode } from "phosphor-react";
 
 export function SidebarNav() {
   return (
